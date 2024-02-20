@@ -1,7 +1,8 @@
 import {Link, useNavigate} from "react-router-dom"
 import Layout from "../layout/Layout"
 import {useSelector, useDispatch} from 'react-redux'
-import {updateFormData, loginData} from '../../store/slices/login'
+import {updateFormData} from '../../store/slices/login'
+import {useEffect} from "react"
 import './css/login.css'
 
 const Login = () => {
@@ -9,8 +10,14 @@ const Login = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const {formData} = useSelector((state) => state.login)
-    // console.log(formData, "Y")
+    const auth = localStorage.getItem("user")
 
+    useEffect(() => {
+        if (auth)
+        {
+            navigate('/')
+        }
+    })
 
     const handleChange = (event) => {
         const {name, value} = event.target
@@ -22,17 +29,9 @@ const Login = () => {
     const handleSubmit = async (event) => {
         event.preventDefault()
 
-        const data = await dispatch(loginData(formData))
-        // console.log(data, "Z")
+        localStorage.setItem("user", formData)
 
-        if (data.payload.success === true)
-        {
-            navigate('/')
-        } else if (data.payload.success === false && data.payload.message)
-        {
-            navigate('/signup')
-        }
-
+        navigate('/')
     }
 
 
